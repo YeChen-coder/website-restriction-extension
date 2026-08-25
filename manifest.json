@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Edge Page Limiter",
+  "version": "1.0.0",
+  "description": "Limit specific Edge tabs by domain or page keywords without closing unrelated tabs.",
+  "permissions": [
+    "alarms",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options.html",
+  "action": {
+    "default_title": "Edge Page Limiter",
+    "default_popup": "popup.html"
+  }
+}
