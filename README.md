@@ -1,5 +1,7 @@
 [English](#english) | [中文](#中文版)
 
+Edge extension add-on in review, coming soon.....
+
 # English
 
 This project follows the same line of thinking as Windows App Restriction. Both are about limiting the time spent on certain websites or applications, so that they reduce unnoticed focus drift.
