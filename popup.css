@@ -1,5 +1,5 @@
 body {
-  width: 260px;
+  width: 280px;
   margin: 0;
   font-family: "Segoe UI", "Microsoft YaHei UI", Arial, sans-serif;
   color: #17202a;
@@ -18,6 +18,26 @@ h1 {
 p {
   color: #586575;
   line-height: 1.45;
+}
+
+.language-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 8px 0 10px;
+  color: #3d4b5c;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+select {
+  width: 100%;
+  border: 1px solid #cbd4df;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #17202a;
+  padding: 8px 9px;
+  font: inherit;
 }
 
 button {

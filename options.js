@@ -1,7 +1,105 @@
+const STORAGE_KEYS = {
+  LANGUAGE: "uiLanguage"
+};
+
+const I18N = {
+  en: {
+    documentTitle: "Edge Page Limiter Settings",
+    appTitle: "Edge Page Limiter",
+    languageLabel: "Language",
+    newRule: "New rule",
+    rescanTabs: "Rescan tabs",
+    ruleList: "Rule list",
+    enabledRule: "Enable this rule",
+    nameLabel: "Name",
+    namePlaceholder: "For example: Bilibili or ChatGPT entertainment",
+    typeLabel: "Rule type",
+    domainOption: "Domain rule: match the whole site",
+    keywordOption: "Keyword rule: match specific pages only",
+    usageLabel: "Allowed minutes",
+    cooldownLabel: "Lock minutes",
+    actionLabel: "Action when time is up / locked",
+    closeOption: "Close matching tabs",
+    redirectOption: "Redirect matching tabs to blocked page",
+    domainsLabel: "Target domains",
+    domainsPlaceholder: "One per line: bilibili.com\nyoutube.com\nchatgpt.com",
+    keywordsLabel: "Keywords",
+    keywordsPlaceholder: "One per line: game\nentertainment\nnovel\nprocrastination",
+    saveRule: "Save rule",
+    duplicate: "Duplicate",
+    delete: "Delete",
+    ruleUnit: "rules",
+    enabled: "Enabled",
+    disabled: "Disabled",
+    domain: "Domain",
+    keyword: "Keyword",
+    closeTabs: "Close tabs",
+    blockedPage: "Blocked page",
+    noDomains: "No domains set",
+    allSites: "All websites",
+    noKeywords: "No keywords set",
+    locked: "Locked",
+    globalCooldown: "Global lock remaining {time}.",
+    summary: "Only matching tabs are restricted. The browser and unrelated tabs stay open. {enabled}/{total} rules enabled. {cooldown}",
+    domainHint: "Domain rules match the domain and its subdomains. For example, bilibili.com matches www.bilibili.com.",
+    keywordHint: "Keyword rules apply within the target domains and match the URL, page title, and visible page text. Useful for limiting specific ChatGPT conversations.",
+    newRuleName: "New rule",
+    untitledRule: "Untitled rule",
+    copySuffix: "copy",
+    deleteConfirm: "Delete \"{name}\"?"
+  },
+  zh: {
+    documentTitle: "Edge Page Limiter 设置",
+    appTitle: "Edge 页面时间锁",
+    languageLabel: "界面语言",
+    newRule: "新建规则",
+    rescanTabs: "重新检查标签页",
+    ruleList: "规则列表",
+    enabledRule: "启用这条规则",
+    nameLabel: "名称",
+    namePlaceholder: "比如 Bilibili 或 ChatGPT 娱乐",
+    typeLabel: "规则类型",
+    domainOption: "域名规则：命中整个网站",
+    keywordOption: "关键词规则：只命中特定页面",
+    usageLabel: "可运行分钟",
+    cooldownLabel: "锁定分钟",
+    actionLabel: "到时间/锁定期动作",
+    closeOption: "关闭命中的标签页",
+    redirectOption: "把命中的标签页跳到锁定页",
+    domainsLabel: "适用域名",
+    domainsPlaceholder: "每行一个：bilibili.com\nyoutube.com\nchatgpt.com",
+    keywordsLabel: "关键词",
+    keywordsPlaceholder: "每行一个：游戏\n娱乐\n小说\n摸鱼",
+    saveRule: "保存规则",
+    duplicate: "复制",
+    delete: "删除",
+    ruleUnit: "条",
+    enabled: "启用",
+    disabled: "停用",
+    domain: "域名",
+    keyword: "关键词",
+    closeTabs: "关闭标签页",
+    blockedPage: "锁定页",
+    noDomains: "未设置域名",
+    allSites: "所有网站",
+    noKeywords: "未设置关键词",
+    locked: "锁定",
+    globalCooldown: "整体锁定剩余 {time}。",
+    summary: "只限制命中的标签页，不关闭浏览器和其他标签页。当前 {enabled}/{total} 条规则启用。{cooldown}",
+    domainHint: "域名规则会匹配该域名和它的子域名，例如 bilibili.com 会匹配 www.bilibili.com。",
+    keywordHint: "关键词规则只在适用域名内生效，并匹配 URL、页面标题、页面可见文本。适合 ChatGPT 的部分聊天限制。",
+    newRuleName: "新规则",
+    untitledRule: "未命名规则",
+    copySuffix: "副本",
+    deleteConfirm: "删除「{name}」？"
+  }
+};
+
 const ruleList = document.querySelector("#ruleList");
 const ruleCount = document.querySelector("#ruleCount");
 const summary = document.querySelector("#summary");
 const form = document.querySelector("#ruleForm");
+const languageSelect = document.querySelector("#languageSelect");
 const fields = {
   id: document.querySelector("#ruleId"),
   enabled: document.querySelector("#enabled"),
@@ -22,6 +120,34 @@ let cooldowns = {};
 let globalCooldownRemaining = 0;
 let formDirty = false;
 let renderingForm = false;
+let language = "en";
+
+function t(key, replacements = {}) {
+  const template = I18N[language]?.[key] || I18N.en[key] || key;
+  return Object.entries(replacements).reduce(
+    (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
+    template
+  );
+}
+
+async function loadLanguage() {
+  const data = await chrome.storage.local.get(STORAGE_KEYS.LANGUAGE);
+  language = data[STORAGE_KEYS.LANGUAGE] === "zh" ? "zh" : "en";
+  languageSelect.value = language;
+  applyStaticText();
+}
+
+function applyStaticText() {
+  document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+  document.title = t("documentTitle");
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    node.textContent = t(node.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+    node.placeholder = t(node.dataset.i18nPlaceholder);
+  });
+  updateTypeHint();
+}
 
 function parseLines(value) {
   return value
@@ -50,7 +176,7 @@ function newRuleTemplate() {
   return {
     id: crypto.randomUUID(),
     enabled: false,
-    name: "新规则",
+    name: t("newRuleName"),
     type: "domain",
     domains: [],
     keywords: [],
@@ -95,6 +221,7 @@ async function saveAll() {
 }
 
 function render() {
+  applyStaticText();
   renderList();
   renderForm();
   renderSummary();
@@ -103,14 +230,18 @@ function render() {
 function renderSummary() {
   const enabledCount = rules.filter((rule) => rule.enabled).length;
   const cooldownText = globalCooldownRemaining > 0
-    ? `整体锁定剩余 ${formatRemaining(globalCooldownRemaining)}。`
+    ? t("globalCooldown", { time: formatRemaining(globalCooldownRemaining) })
     : "";
-  summary.textContent = `只限制命中的标签页，不关闭浏览器和其他标签页。当前 ${enabledCount}/${rules.length} 条规则启用。${cooldownText}`;
+  summary.textContent = t("summary", {
+    enabled: enabledCount,
+    total: rules.length,
+    cooldown: cooldownText
+  });
 }
 
 function renderList() {
   ruleList.textContent = "";
-  ruleCount.textContent = `${rules.length} 条`;
+  ruleCount.textContent = language === "zh" ? `${rules.length} ${t("ruleUnit")}` : `${rules.length} ${t("ruleUnit")}`;
 
   for (const rule of rules) {
     const button = document.createElement("button");
@@ -125,24 +256,24 @@ function renderList() {
     title.textContent = rule.name;
     const meta = document.createElement("span");
     meta.textContent = [
-      rule.enabled ? "启用" : "停用",
-      rule.type === "domain" ? "域名" : "关键词",
-      rule.action === "close" ? "关闭标签页" : "锁定页"
+      rule.enabled ? t("enabled") : t("disabled"),
+      rule.type === "domain" ? t("domain") : t("keyword"),
+      rule.action === "close" ? t("closeTabs") : t("blockedPage")
     ].join(" · ");
 
     const target = document.createElement("small");
     if (rule.type === "domain") {
-      target.textContent = (rule.domains || []).join(", ") || "未设置域名";
+      target.textContent = (rule.domains || []).join(", ") || t("noDomains");
     } else {
-      const domainText = (rule.domains || []).join(", ") || "所有网站";
-      const keywordText = (rule.keywords || []).slice(0, 4).join(", ") || "未设置关键词";
+      const domainText = (rule.domains || []).join(", ") || t("allSites");
+      const keywordText = (rule.keywords || []).slice(0, 4).join(", ") || t("noKeywords");
       target.textContent = `${domainText} · ${keywordText}`;
     }
 
     const cooldown = Number(cooldowns[rule.id] || 0);
     if (cooldown > 0) {
       const pill = document.createElement("em");
-      pill.textContent = `锁定 ${formatRemaining(cooldown)}`;
+      pill.textContent = `${t("locked")} ${formatRemaining(cooldown)}`;
       button.append(title, meta, target, pill);
     } else {
       button.append(title, meta, target);
@@ -179,9 +310,7 @@ function renderForm() {
 function updateTypeHint() {
   const type = fields.type.value;
   keywordsField.hidden = type !== "keyword";
-  typeHint.textContent = type === "domain"
-    ? "域名规则会匹配该域名和它的子域名，例如 bilibili.com 会匹配 www.bilibili.com。"
-    : "关键词规则只在适用域名内生效，并匹配 URL、页面标题、页面可见文本。适合 ChatGPT 的部分聊天限制。";
+  typeHint.textContent = type === "domain" ? t("domainHint") : t("keywordHint");
 }
 
 function readFormRule() {
@@ -192,7 +321,7 @@ function readFormRule() {
     ...existing,
     id: fields.id.value || existing.id || crypto.randomUUID(),
     enabled: fields.enabled.checked,
-    name: fields.name.value.trim() || "未命名规则",
+    name: fields.name.value.trim() || t("untitledRule"),
     type: fields.type.value,
     domains: parseLines(fields.domains.value),
     keywords: parseLines(fields.keywords.value),
@@ -227,6 +356,12 @@ function markFormDirty() {
 form.addEventListener("input", markFormDirty);
 form.addEventListener("change", markFormDirty);
 
+languageSelect.addEventListener("change", async () => {
+  language = languageSelect.value === "zh" ? "zh" : "en";
+  await chrome.storage.local.set({ [STORAGE_KEYS.LANGUAGE]: language });
+  render();
+});
+
 fields.type.addEventListener("change", updateTypeHint);
 
 fields.enabled.addEventListener("change", async () => {
@@ -249,7 +384,7 @@ document.querySelector("#duplicateButton").addEventListener("click", () => {
     ...rule,
     id: crypto.randomUUID(),
     enabled: false,
-    name: `${rule.name} 副本`,
+    name: `${rule.name} ${t("copySuffix")}`,
     createdAt: Date.now()
   };
   rules.push(copy);
@@ -261,7 +396,7 @@ document.querySelector("#duplicateButton").addEventListener("click", () => {
 document.querySelector("#deleteButton").addEventListener("click", async () => {
   const rule = selectedRule();
   if (!rule) return;
-  if (!confirm(`删除「${rule.name}」？`)) return;
+  if (!confirm(t("deleteConfirm", { name: rule.name }))) return;
   rules = rules.filter((item) => item.id !== rule.id);
   selectedId = rules[0]?.id || "";
   await saveAll();
@@ -272,5 +407,5 @@ document.querySelector("#rescanButton").addEventListener("click", async () => {
   await load({ force: !formDirty });
 });
 
-load();
+loadLanguage().then(load);
 setInterval(load, 5000);

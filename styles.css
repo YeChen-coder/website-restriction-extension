@@ -74,6 +74,15 @@ button.danger {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.language-field {
+  min-width: 150px;
+}
+
+.language-field span {
+  font-size: 12px;
 }
 
 .layout {
@@ -228,5 +237,9 @@ textarea {
   .topbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .topbar-actions {
+    justify-content: flex-start;
   }
 }

@@ -1,28 +1,35 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Edge Page Limiter 设置</title>
+    <title>Edge Page Limiter Settings</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="app-shell">
       <header class="topbar">
         <div>
-          <h1>Edge 页面时间锁</h1>
-          <p id="summary">只限制命中的标签页，不关闭浏览器和其他标签页。</p>
+          <h1 data-i18n="appTitle">Edge Page Limiter</h1>
+          <p id="summary">Only matching tabs are restricted. The browser and unrelated tabs stay open.</p>
         </div>
         <div class="topbar-actions">
-          <button id="newRuleButton" class="primary">新建规则</button>
-          <button id="rescanButton">重新检查标签页</button>
+          <label class="language-field">
+            <span data-i18n="languageLabel">Language</span>
+            <select id="languageSelect">
+              <option value="en">English</option>
+              <option value="zh">中文</option>
+            </select>
+          </label>
+          <button id="newRuleButton" class="primary" data-i18n="newRule">New rule</button>
+          <button id="rescanButton" data-i18n="rescanTabs">Rescan tabs</button>
         </div>
       </header>
 
       <section class="layout">
         <aside class="rule-list-panel">
           <div class="panel-heading">
-            <h2>规则列表</h2>
+            <h2 data-i18n="ruleList">Rule list</h2>
             <span id="ruleCount"></span>
           </div>
           <div id="ruleList" class="rule-list"></div>
@@ -35,59 +42,59 @@
             <div class="form-row switch-row">
               <label class="switch">
                 <input id="enabled" type="checkbox">
-                <span>启用这条规则</span>
+                <span data-i18n="enabledRule">Enable this rule</span>
               </label>
             </div>
 
             <div class="form-grid">
               <label>
-                <span>名称</span>
-                <input id="name" type="text" placeholder="比如 Bilibili 或 ChatGPT 娱乐">
+                <span data-i18n="nameLabel">Name</span>
+                <input id="name" type="text" data-i18n-placeholder="namePlaceholder" placeholder="For example: Bilibili or ChatGPT entertainment">
               </label>
 
               <label>
-                <span>规则类型</span>
+                <span data-i18n="typeLabel">Rule type</span>
                 <select id="type">
-                  <option value="domain">域名规则：命中整个网站</option>
-                  <option value="keyword">关键词规则：只命中特定页面</option>
+                  <option value="domain" data-i18n="domainOption">Domain rule: match the whole site</option>
+                  <option value="keyword" data-i18n="keywordOption">Keyword rule: match specific pages only</option>
                 </select>
               </label>
 
               <label>
-                <span>可运行分钟</span>
+                <span data-i18n="usageLabel">Allowed minutes</span>
                 <input id="usageLimitMinutes" type="number" min="0.05" step="0.05" value="10">
               </label>
 
               <label>
-                <span>锁定分钟</span>
+                <span data-i18n="cooldownLabel">Lock minutes</span>
                 <input id="cooldownMinutes" type="number" min="0.05" step="0.05" value="5">
               </label>
 
               <label>
-                <span>到时间/锁定期动作</span>
+                <span data-i18n="actionLabel">Action when time is up / locked</span>
                 <select id="action">
-                  <option value="close">关闭命中的标签页</option>
-                  <option value="redirect">把命中的标签页跳到锁定页</option>
+                  <option value="close" data-i18n="closeOption">Close matching tabs</option>
+                  <option value="redirect" data-i18n="redirectOption">Redirect matching tabs to blocked page</option>
                 </select>
               </label>
             </div>
 
             <label class="wide-field">
-              <span>适用域名</span>
-              <textarea id="domains" rows="4" placeholder="每行一个：bilibili.com&#10;youtube.com&#10;chatgpt.com"></textarea>
+              <span data-i18n="domainsLabel">Target domains</span>
+              <textarea id="domains" rows="4" data-i18n-placeholder="domainsPlaceholder" placeholder="One per line: bilibili.com&#10;youtube.com&#10;chatgpt.com"></textarea>
             </label>
 
             <label class="wide-field" id="keywordsField">
-              <span>关键词</span>
-              <textarea id="keywords" rows="5" placeholder="每行一个：游戏&#10;娱乐&#10;小说&#10;摸鱼"></textarea>
+              <span data-i18n="keywordsLabel">Keywords</span>
+              <textarea id="keywords" rows="5" data-i18n-placeholder="keywordsPlaceholder" placeholder="One per line: game&#10;entertainment&#10;novel&#10;procrastination"></textarea>
             </label>
 
             <div class="hint" id="typeHint"></div>
 
             <div class="form-actions">
-              <button type="submit" class="primary">保存规则</button>
-              <button type="button" id="duplicateButton">复制</button>
-              <button type="button" id="deleteButton" class="danger">删除</button>
+              <button type="submit" class="primary" data-i18n="saveRule">Save rule</button>
+              <button type="button" id="duplicateButton" data-i18n="duplicate">Duplicate</button>
+              <button type="button" id="deleteButton" class="danger" data-i18n="delete">Delete</button>
             </div>
           </form>
         </section>
