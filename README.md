@@ -1,6 +1,6 @@
 [English](#english) | [中文](#中文版)
 
-Edge extension add-on in review, coming soon.....
+Edge extension add-on： https://microsoftedge.microsoft.com/addons/detail/edge-page-limiter/jbjjehnekbmflndkahfpoapapkcoeaii
 
 # English
 
@@ -41,13 +41,13 @@ Life is open country, but code is a swamp. Use what works; change what does not.
 
 # 中文版
 
-这个和 Windows App Restriction 其实是一脉相承的，都是通过限制某些网页的使用时间来减少“未经察觉的focus”。
+已经在edge add-on platform 了，免费的，什么都不用干，不用登陆，下了就用 https://microsoftedge.microsoft.com/addons/detail/edge-page-limiter/jbjjehnekbmflndkahfpoapapkcoeaii
 
+这个和 Windows App Restriction 其实是一脉相承的，都是通过限制某些网页的使用时间来减少“未经察觉的focus”。
 
 这是一个 IE Extension。点开之后能看到下图入口页面，非常简单明确。
 
 所有内容都可以定制，包括时间、时段，以及匹配方式。它是按网址匹配，还是网址加关键词匹配，都可以定制。
-
 
 <img width="1049" height="685" alt="image" src="https://github.com/user-attachments/assets/5a345c06-ab35-40a8-a24c-8c1f2a095299" />
 
