@@ -1,6 +1,6 @@
-[English](#english) | [中文](#中文)
+[English](#english) | [中文](#中文版)
 
-# English Version
+# English
 
 This project follows the same line of thinking as Windows App Restriction. Both are about limiting the time spent on certain websites or applications, so that they reduce unnoticed focus drift.
 
