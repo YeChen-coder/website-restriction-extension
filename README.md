@@ -4,6 +4,8 @@ Edge extension add-on： https://microsoftedge.microsoft.com/addons/detail/edge-
 
 # English
 
+The extension is available free from the [Microsoft Edge Add-ons store](https://microsoftedge.microsoft.com/addons/detail/edge-page-limiter/jbjjehnekbmflndkahfpoapapkcoeaii). It requires no account or additional setup: install it and start using it.
+
 This project follows the same line of thinking as Windows App Restriction. Both are about limiting the time spent on certain websites or applications, so that they reduce unnoticed focus drift.
 
 This is an Edge extension. After opening it, you will see the simple entry page shown below.
